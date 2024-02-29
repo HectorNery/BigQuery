@@ -17,24 +17,30 @@ client = bigquery.Client()
 
 query = """
     SELECT
-  year AS Anio,
-  major_category AS CategoriaPrincipal,
-  borough AS Distrito,
-  SUM(value) AS TotalDelitos
-FROM
-  `bigquery-public-data.london_crime.crime_by_lsoa`
-WHERE
-  year IS NOT NULL
-  AND major_category IS NOT NULL
-  AND borough IS NOT NULL
-GROUP BY
-  Anio, CategoriaPrincipal, Distrito
-ORDER BY
-  Anio, TotalDelitos DESC;
+      year AS Anio,
+      major_category AS CategoriaPrincipal,
+      borough AS Distrito,
+      SUM(value) AS TotalDelitos
+    FROM
+      bigquery-public-data.london_crime.crime_by_lsoa
+    WHERE
+      year IS NOT NULL
+      AND major_category IS NOT NULL
+      AND borough IS NOT NULL
+    GROUP BY
+      Anio, CategoriaPrincipal, Distrito
+    ORDER BY
+      Anio, TotalDelitos DESC;
 """
+
 results = client.query(query)
 
+print(f'{"Anio":<10} | {"CategoriaPrincipal":<25} | {"Distrito":<25} | {"TotalDelitos":>15}')
+print("-" * 90)
+
 for row in results:
-    subject = row['subject']
-    num_duplicates = row['num_duplicates']
-    print(f'{subject:<20} | {num_duplicates:>9,}')
+    Anio = row['Anio']
+    CategoriaPrincipal = row['CategoriaPrincipal']
+    Distrito = row['Distrito']
+    TotalDelitos = row['TotalDelitos']
+    print(f'{Anio:<10} | {CategoriaPrincipal:<25} | {Distrito:<25} | {TotalDelitos:>15,}')
